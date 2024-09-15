@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: UGPlayerTFollower
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 8d35659e0977aca4fab0e69ad729d8da,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: cbec452f66f7f9d4f8e8b07f0201c3fa,
     type: 2}
   udonAssembly: ".data_start\r\n\r\n    \r\n    __instance_0: %UnityEngineTransform,
     this\r\n    __position_0: %UnityEngineVector3, null\r\n    __rotation_0: %UnityEngineQuaternion,
@@ -79,8 +79,5 @@ MonoBehaviour:
         stringValue: 
     updateOrder: 0
   graphElementData: []
-  viewTransform:
-    position: {x: 0, y: 0}
-    scale: 1
   version: 1.0.0
   showAssembly: 0

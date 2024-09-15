@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: LocalizationManager
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 8febb3f05fde40747a3aa0b93d1a126e,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: ff9e2d386624d6649824abdcb45ad76f,
     type: 2}
   udonAssembly: 
   assemblyError: 

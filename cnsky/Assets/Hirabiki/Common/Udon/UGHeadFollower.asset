@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: UGHeadFollower
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d007eaff3af65614aad0e131f047f3ee,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 983457489098b3a418547a31232166a6,
     type: 2}
   udonAssembly: ".data_start\r\n\r\n    \r\n    __Boolean_0: %SystemBoolean, null\r\n   
     __Object_0: %SystemObject, null\r\n    __Object_1: %SystemObject, null\r\n   

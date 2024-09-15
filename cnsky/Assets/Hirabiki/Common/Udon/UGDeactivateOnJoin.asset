@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: UGDeactivateOnJoin
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: ff7b331bb647379479e136fe7c86d895,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 6bba0b2ab986f854ca07d8f0edaaba37,
     type: 2}
   udonAssembly: ".data_start\r\n\r\n    \r\n    __Boolean_0: %SystemBoolean, null\r\n   
     __instance_0: %VRCSDKBaseVRCPlayerApi, null\r\n    __obj_0: %SystemObject, null\r\n   
@@ -82,8 +82,5 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089|False
     updateOrder: 0
   graphElementData: []
-  viewTransform:
-    position: {x: 539, y: 387}
-    scale: 1
   version: 1.0.0
   showAssembly: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: UGUnparentOnStart
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 0f2e86980507a524c9f4f21ace424a8a,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 8593126d3526d5d45ac5bb4e1f7a49d9,
     type: 2}
   udonAssembly: ".data_start\r\n\r\n    \r\n    __instance_0: %UnityEngineTransform,
     this\r\n    __value_0: %UnityEngineTransform, this\r\n    __instance_1: %UnityEngineTransform,
@@ -72,8 +72,5 @@ MonoBehaviour:
   - type: 4
     uid: 5308c4f2-f1c4-4fe0-a53a-b0b09f88ac62
     jsonData: '{"visible":true,"layout":{"serializedVersion":"2","x":10.0,"y":20.0,"width":0.0,"height":0.0}}'
-  viewTransform:
-    position: {x: 617, y: 645}
-    scale: 1
   version: 1.0.0
   showAssembly: 0

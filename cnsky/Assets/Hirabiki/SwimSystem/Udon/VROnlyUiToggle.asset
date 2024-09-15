@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f11136daadff0b44ac2278a314682ab, type: 3}
   m_Name: VROnlyUiToggle
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: fc563b897b380414d9a72f36d8f3e76a,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: dbfd9f0bb3d3497428c4f0d139934337,
     type: 2}
   udonAssembly: ".data_start\r\n\r\n    \r\n    __Boolean_0: %SystemBoolean, null\r\n   
     __Object_0: %SystemObject, null\r\n    __Object_1: %SystemObject, null\r\n   
