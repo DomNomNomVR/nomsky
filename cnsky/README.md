@@ -76,13 +76,11 @@ For VCC (Creator Companion)
 ### Compute CRT
 
  * Top Row: Unused
- * All data broken into rgoups of 2x6 pixels.
+ * All data broken into groups of 2x6 pixels.
  * Top Row: Position,Time
  * Bottom Row: Velocity
  * Row goes:
  * -25 min, -15 min, -5min "now" +5 min, +15 min, +25 min
- 
- 
  
  
  
