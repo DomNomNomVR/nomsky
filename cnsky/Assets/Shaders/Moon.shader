@@ -1,4 +1,4 @@
-Shader "cnlohr/Earth"
+Shader "cnlohrdomnomnom/Moon"
 {
 	//based on Shader "d4rkpl4y3r/BRDF PBS Macro"
 	
@@ -11,7 +11,7 @@ Shader "cnlohr/Earth"
 		[hdr] _Color("Albedo", Color) = (1,1,1,1)
 		[Gamma] _Metallic("Metallic", Range(0, 1)) = 0
 		_Smoothness("Smoothness", Range(0, 1)) = 0
-		_EarthMidnightRotation("Earth Midnight Rotation", float) = 0
+		_EarthMidnightRotation("Midnight Rotation", float) = 0
 		_ManagementTexture ("Management", 2D) = "white" {}
 		[UIToggle] _RayTrace ("Ray Trace", float) = 1.0
 	}
@@ -45,7 +45,6 @@ Shader "cnlohr/Earth"
 
 			struct v2f
 			{
-				float3 objectOrigin : OBP;
 				float3 rayOrigin : RAYORIGIN;
 				float3 rayDir : RAYDIR;
 
@@ -66,13 +65,22 @@ Shader "cnlohr/Earth"
 			v2f vert(appdata_base v)
 			{
 				v2f o;
-				o.objectOrigin = mul(unity_ObjectToWorld, float4(0.0,0.0,0.0,1.0) );
+
+				// Move the moon to a new position
+				float4x4 ObjectToWorld = unity_ObjectToWorld;
+				float3 objectOrigin = mul(ObjectToWorld, float4(0.0,0.0,0.0,1.0) );
+				float distance_to_earth = length(objectOrigin);
+				objectOrigin = distance_to_earth * float3(sin(_Time.y), 0, cos(_Time.y));
+				ObjectToWorld[0][3] = objectOrigin.x;
+				ObjectToWorld[1][3] = objectOrigin.y;
+				ObjectToWorld[2][3] = objectOrigin.z;
+
 				// Thanks ben dot com.
 				// I saw these ortho shadow substitutions in a few places, but bgolus explains them
 				// https://bgolus.medium.com/rendering-a-sphere-on-a-quad-13c92025570c
 				float howOrtho = UNITY_MATRIX_P._m33; // instead of unity_OrthoParams.w
 				float3 worldSpaceCameraPos = UNITY_MATRIX_I_V._m03_m13_m23; // instead of _WorldSpaceCameraPos
-				float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
+				float3 worldPos = mul(ObjectToWorld, v.vertex);
 				float3 cameraToVertex = worldPos - worldSpaceCameraPos;
 				float3 orthoFwd = -UNITY_MATRIX_I_V._m02_m12_m22; // often seen: -UNITY_MATRIX_V[2].xyz;
 				float3 orthoRayDir = orthoFwd * dot(cameraToVertex, orthoFwd);
@@ -94,7 +102,7 @@ Shader "cnlohr/Earth"
 				#ifdef UNITY_PASS_SHADOWCASTER
 				TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#else
-				o.wPos = mul(unity_ObjectToWorld, v.vertex);
+				o.wPos = mul(ObjectToWorld, v.vertex);
 				o.vPos = v.vertex;
 				o.pos = UnityWorldToClipPos(o.wPos);
 				o.normal = UnityObjectToWorldNormal(v.normal);

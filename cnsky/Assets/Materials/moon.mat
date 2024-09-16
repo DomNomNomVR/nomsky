@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Earth
-  m_Shader: {fileID: 4800000, guid: 02528f566cdc40e45ba23a23065b9ca9, type: 3}
+  m_Name: moon
+  m_Shader: {fileID: 4800000, guid: f356695f7b3ef6943b11a8741ad69722, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -48,11 +48,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexDay:
-        m_Texture: {fileID: 2800000, guid: 26817ce223e30704194d509963975f6c, type: 3}
+        m_Texture: {fileID: 2800000, guid: efcb55028885b4d4b8dace9166dc4609, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexNight:
-        m_Texture: {fileID: 2800000, guid: 323329885f6fbac4dbb0ab60b03b301a, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1f077f2a977ad304c9c8264cc41347bf, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ManagementTexture:
