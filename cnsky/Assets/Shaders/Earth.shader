@@ -30,6 +30,7 @@ Shader "cnlohr/Earth"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"
 			#include "UnityPBSLighting.cginc"
+			#include "Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc"
 
 			uniform float4 _Color;
 			uniform float _Metallic;
@@ -160,16 +161,85 @@ Shader "cnlohr/Earth"
 				}
 				
 				lambda -= fFTime*3.1415926535*2 + _EarthMidnightRotation;
-				
+
 				uv.x = (lambda/2.0);
 				uv.y = -phi;
-				
-				uv.x = frac( uv.x / 3.1415926535 + 1 ); 
-				uv.y = frac( uv.y / 3.1415926535 + 1 ); 
+
+				uv.x = frac( uv.x / 3.1415926535 + 1 );
+				uv.y = frac( uv.y / 3.1415926535 + 1 );
 				//uv = clamp( uv, 0.0, .99 );
-				
-				
-				float dayness = saturate( dot( normal, normalize(_WorldSpaceLightPos0.xyz) )  * 6.0);
+
+				// return float4(-_WorldSpaceLightPos0.xyz, 1);
+				float3 sun_dir = normalize(_WorldSpaceLightPos0.xyz);
+				{
+					// https://astronomy.stackexchange.com/a/37199
+					float UTCDAY = AudioLinkDecodeDataAsUInt( ALPASS_GENERALVU_UNIX_DAYS );
+					float UTCDAYf = AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )/86400.0;
+					float J2000_in_unix_days = (946684800 / 86400.0);
+					float d = (UTCDAY - J2000_in_unix_days) + UTCDAYf;  // days_since_J2000
+
+					const float pi = 3.14159265359;
+				    float L = 280.4606184 + ((36000.77005361 / 36525) * d); // mean longitude, in degrees
+				    float g = 357.5277233 + ((35999.05034 / 36525) * d); // mean anomaly, in degrees
+				    float p = L + (1.914666471 * sin(g * pi / 180)) + (0.918994643 * sin(2*g * pi / 180)); // ecliptic longitude lambda, in degrees
+				    float q = 23.43929 - ((46.8093/3600) * (d / 36525)); // obliquity of ecliptic plane epsilon, in degrees
+
+				    sun_dir = float3(
+					    cos(p * pi / 180),
+					    cos(q * pi / 180) * sin(p * pi / 180),
+					    sin(q * pi / 180) * sin(p * pi / 180)
+					);
+				}
+				// {
+				// 	// double SGP4_FROM_EPOCH_DAYS = 2440587.5;
+				// 	float UTCDAY = AudioLinkDecodeDataAsUInt( ALPASS_GENERALVU_UNIX_DAYS );
+				// 	float UTCDAYf = AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )/86400.0;
+
+				// 	// float JD = 1970.0 * 367.0 + UTCDAY + UTCDAYf;
+				// 	// float JD = UTCDAYf * 86400.1*5000;
+				// 	// time = time.ToUniversalTime();
+				// 	// float JD = (
+				// 	// 	367*time.Year-floor(7.0*(time.Year+floor((time.Month+9.0)/12.0))/4.0)
+				// 	// 	+floor(275.0*time.Month/9.0)
+				// 	// 	+time.Day
+				// 	// 	+1721013.5  // 4715.10547945 years
+				// 	// 	+time.Hour/24.0
+				// 	// 	+time.Minute/1440.0
+				// 	// 	+time.Second/86400.0
+				// 	// );
+
+
+    			// 	// 2440587.5 days + UNIX TIME in days === Julian Day
+    			// 	// float JD =  2440587.5 + UTCDAY + UTCDAYf * 1000;
+				// 	// float UT1 = (JD-2451545)/36525;
+
+				// 	float UT1 = ((UTCDAY + frac(UTCDAYf * 86400.)) + (2440587.5 - 2451545)) / 36525.;
+				// 	float pi = 3.14159265359;
+				// 	float longMSUN = 280.4606184+36000.77005361*UT1;
+				// 	float mSUN = 357.5277233+35999.05034*UT1;
+				// 	float ecliptic = longMSUN + 1.914666471*sin(mSUN*pi/180.) + 0.918994643*sin(2*mSUN*pi/180.);
+				// 	float eccen = 23.439291-0.0130042*UT1;
+
+				// 	float x = cos(ecliptic*pi/180);
+				// 	float y = cos(eccen*pi/180)*sin(ecliptic*pi/180);
+				// 	float z = sin(eccen*pi/180)*sin(ecliptic*pi/180);
+
+				// 	sun_dir = normalize(float3(x, y, z).xyz);
+				// }
+				// {
+				// 	float UTCDAY = AudioLinkDecodeDataAsUInt( ALPASS_GENERALVU_UNIX_DAYS );
+				// 	float UTCDAYf = AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )/86400.0;
+				// 	sun_dir = float3(
+				// 		sin(AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )),
+				// 		cos(AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )),
+				// 		0
+				// 	);
+				// }
+
+				float dayness = saturate( dot( normal,  sun_dir)  * 6.0);
+				// if (abs(dot( normal,  sun_dir) ) < .003) {
+				// 	return float4(1.0, .5, 0, 1);
+				// }
 				float4 texCol = lerp( tex2Dgrad(_MainTexNight, uv, ddx(uvbase), ddy(uvbase) ), tex2Dgrad(_MainTexDay, uv, ddx(uvbase), ddy(uvbase)), dayness ) * _Color;
 				clip(texCol.a - _Cutoff);
 				
