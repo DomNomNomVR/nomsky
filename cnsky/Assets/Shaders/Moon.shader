@@ -62,15 +62,107 @@ Shader "cnlohrdomnomnom/Moon"
 				float2 uv : TEXCOORD1;
 			};
 
+
+			// def sun_position(mjd_utc, dt_tt=69.184):
+			//     """ECI position (meters) of the Sun at the given MJD (UTC)."""
+			//     # Reference: Meeus, Jean, Astronomical Algorithms (2nd Ed.). Richmond:
+			//     # Willmann-Bell, Inc., 2009.
+			//     T = (mjd_utc - 51544.5 + dt_tt / 86400) / 36525                  # (25.1)
+			//     L0_deg = 280.46646 + T * (36000.76983 + T * 0.0003032)           # (25.2)
+			//     M_deg = 357.52911 + T * (35999.05029 - T * 0.0001537)            # (25.3)
+			//     M = radians(M_deg)
+			//     e = 0.016708634 - T * (0.000042037 + T * 0.0000001267)           # (25.4)
+			//     C_deg = ((1.914602 - T * (0.004817 + T * 0.000014)) * sin(M)
+			//            + (0.019993 - T * 0.000101) * sin(2 * M)
+			//             + 0.000289 * sin(3 * M))
+			//     true_lon_deg = L0_deg + C_deg
+			//     nu = radians(M_deg + C_deg)
+			//     R = 149597870000 * 1.000001018 * (1 - e * e) / (1 + e * cos(nu)) # (25.5)
+			//     Omega = radians(125.04 - 1934.136 * T)
+			//     lon = radians(true_lon_deg - 0.00569 - 0.00478 * sin(Omega))
+			//     epsilon = radians(23 + (26 + (21.448                             # (22.2)
+			//         - T * (46.8150 + T * (0.00059 - T * 0.001813))) / 60) / 60
+			//         + 0.00256 * cos(Omega))                                      # (25.8)
+			//     return (R * cos(lon),                                            # (26.1)
+			//             R * sin(lon) * cos(epsilon),
+			//             R * sin(lon) * sin(epsilon))
+
+			float radians(float degrees) {
+				return degrees * (2.*3.1415926535 / 360.);
+			}
+
+			float3 moon_position(float days_since_J2000) {
+
+			    // ECI position (meters) of the Moon at the given MJD (UTC).
+			    // ported from public domain code:
+			    // https://possiblywrong.wordpress.com/2014/01/04/computing-positions-and-eclipses-of-the-sun-and-moon/
+			    // Reference: Montenbruck and Gill, Satellite Orbits. Berlin: Springer,
+			    // 2005, Chapter 3.3.2.
+			    // float days_since_J2000 = mjd_utc - 51544.5 + dt_tt / 86400;
+			    float T = days_since_J2000 / 36525.; // centuries since J2000
+
+			    // equation (3.47)
+			    float L0 = radians(218.31617 + 481267.88088 * T);
+			    float l = radians(134.96292 + 477198.86753 * T);
+			    float lp = radians(357.52543 + 35999.04944 * T);
+			    float F = radians(93.27283 + 483202.01873 * T);
+			    float D = radians(297.85027 + 445267.11135 * T);
+
+			    // equation (3.48)
+			    float dL = radians((22640 * sin(l) + 769 * sin(2 * l)
+			        - 4586 * sin(l - 2 * D) + 2370 * sin(2 * D)
+			        - 668 * sin(lp) - 412 * sin(2 * F)
+			        - 212 * sin(2 * l - 2 * D) - 206 * sin(l + lp - 2 * D)
+			        + 192 * sin(l + 2 * D) - 165 * sin(lp - 2 * D)
+			        + 148 * sin(l - lp) - 125 * sin(D)
+			        - 110 * sin(l + lp) - 55 * sin(2 * F - 2 * D)) / 3600);
+			    float lon = L0 + dL;
+
+			    // equation (3.49)
+			    float beta = radians((18520 * sin(F + dL + radians(
+			            (412 * sin(2 * F) + 541 * sin(lp)) / 3600))
+			        - 526 * sin(F - 2 * D) + 44 * sin(l + F - 2 * D)
+			        - 31 * sin(-l + F - 2 * D) - 25 * sin(-2 * l + F)
+			        - 23 * sin(lp + F - 2 * D) + 21 * sin(-l + F)
+			        + 11 * sin(-lp + F - 2 * D)) / 3600);
+
+			    // equation (3.50)
+			    float r = 1000 * (385000 - 20905 * cos(l) - 3699 * cos(2 * D - l)
+			         - 2956 * cos(2 * D) - 570 * cos(2 * l) + 246 * cos(2 * l - 2 * D)
+			         - 205 * cos(lp - 2 * D) - 171 * cos(l + 2 * D)
+			         - 152 * cos(l + lp - 2 * D));
+
+			    // equation (3.51)
+			    float x = r * cos(lon) * cos(beta);
+			    float y = r * sin(lon) * cos(beta);
+			    float z = r * sin(beta);
+
+			    // equation (3.45)
+			    float epsilon = radians(23.43929111);
+			    float s = sin(-epsilon);
+			    float c = cos(-epsilon);
+			    return float3(
+			    	x,
+			    	 y * c + z * s,
+			    	-y * s + z * c
+		    	);
+			}
+
 			v2f vert(appdata_base v)
 			{
 				v2f o;
+
+				float UTCDAY = AudioLinkDecodeDataAsUInt( ALPASS_GENERALVU_UNIX_DAYS );
+				float UTCDAYf = AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )/86400.0;
+				float J2000_in_unix_days = (946684800 / 86400.0);
+				float days_since_J2000 = (UTCDAY - J2000_in_unix_days) + UTCDAYf;
 
 				// Move the moon to a new position
 				float4x4 ObjectToWorld = unity_ObjectToWorld;
 				float3 objectOrigin = mul(ObjectToWorld, float4(0.0,0.0,0.0,1.0) );
 				float distance_to_earth = length(objectOrigin);
-				objectOrigin = distance_to_earth * float3(sin(_Time.y), 0, cos(_Time.y));
+				float3 moon_eci_meters = moon_position(days_since_J2000);
+				objectOrigin = distance_to_earth * normalize(moon_eci_meters); //* float3(sin(_Time.y), 0, cos(_Time.y));
 				ObjectToWorld[0][3] = objectOrigin.x;
 				ObjectToWorld[1][3] = objectOrigin.y;
 				ObjectToWorld[2][3] = objectOrigin.z;

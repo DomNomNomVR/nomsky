@@ -115,7 +115,7 @@ Shader "cnlohr/Earth"
 				
 				float4 InfoBlock0 = _ManagementTexture.Load( int3( 0, _ManagementTexture_TexelSize.w - 1, 0 ) );
 				float fFTime = InfoBlock0.z;
-				
+
 				float lambda;
 				float phi;
 				
