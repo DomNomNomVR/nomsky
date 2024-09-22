@@ -152,27 +152,12 @@ Shader "cnlohrdomnomnom/Moon"
 			{
 				v2f o;
 
-				float UTCDAY = AudioLinkDecodeDataAsUInt( ALPASS_GENERALVU_UNIX_DAYS );
-				float UTCDAYf = AudioLinkDecodeDataAsSeconds( ALPASS_GENERALVU_UNIX_SECONDS )/86400.0;
-				float J2000_in_unix_days = (946684800 / 86400.0);
-				float days_since_J2000 = (UTCDAY - J2000_in_unix_days) + UTCDAYf;
-
-				// Move the moon to a new position
-				float4x4 ObjectToWorld = unity_ObjectToWorld;
-				float3 objectOrigin = mul(ObjectToWorld, float4(0.0,0.0,0.0,1.0) );
-				float distance_to_earth = length(objectOrigin);
-				float3 moon_eci_meters = moon_position(days_since_J2000);
-				objectOrigin = distance_to_earth * normalize(moon_eci_meters); //* float3(sin(_Time.y), 0, cos(_Time.y));
-				ObjectToWorld[0][3] = objectOrigin.x;
-				ObjectToWorld[1][3] = objectOrigin.y;
-				ObjectToWorld[2][3] = objectOrigin.z;
-
 				// Thanks ben dot com.
 				// I saw these ortho shadow substitutions in a few places, but bgolus explains them
 				// https://bgolus.medium.com/rendering-a-sphere-on-a-quad-13c92025570c
 				float howOrtho = UNITY_MATRIX_P._m33; // instead of unity_OrthoParams.w
 				float3 worldSpaceCameraPos = UNITY_MATRIX_I_V._m03_m13_m23; // instead of _WorldSpaceCameraPos
-				float3 worldPos = mul(ObjectToWorld, v.vertex);
+				float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
 				float3 cameraToVertex = worldPos - worldSpaceCameraPos;
 				float3 orthoFwd = -UNITY_MATRIX_I_V._m02_m12_m22; // often seen: -UNITY_MATRIX_V[2].xyz;
 				float3 orthoRayDir = orthoFwd * dot(cameraToVertex, orthoFwd);
@@ -194,7 +179,7 @@ Shader "cnlohrdomnomnom/Moon"
 				#ifdef UNITY_PASS_SHADOWCASTER
 				TRANSFER_SHADOW_CASTER_NOPOS(o, o.pos);
 				#else
-				o.wPos = mul(ObjectToWorld, v.vertex);
+				o.wPos = mul(unity_ObjectToWorld, v.vertex);
 				o.vPos = v.vertex;
 				o.pos = UnityWorldToClipPos(o.wPos);
 				o.normal = UnityObjectToWorldNormal(v.normal);

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: moon
-  m_Shader: {fileID: 4800000, guid: f356695f7b3ef6943b11a8741ad69722, type: 3}
+  m_Shader: {fileID: 4800000, guid: 02528f566cdc40e45ba23a23065b9ca9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
