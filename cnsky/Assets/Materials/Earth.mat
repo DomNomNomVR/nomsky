@@ -48,11 +48,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexDay:
-        m_Texture: {fileID: 2800000, guid: 26817ce223e30704194d509963975f6c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 32b9b30d35c29ff4bbccef720fb759f5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexNight:
-        m_Texture: {fileID: 2800000, guid: 323329885f6fbac4dbb0ab60b03b301a, type: 3}
+        m_Texture: {fileID: 2800000, guid: bff7976f8dacac34387b73a1e4e69323, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ManagementTexture:
